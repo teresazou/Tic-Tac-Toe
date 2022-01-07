@@ -60,6 +60,7 @@ const cell=define();
 for(var i=0;i<cell.length;i++){
     cell[i].innerText=null;
     document.getElementById(i).style.backgroundColor=null;
+    document.querySelector('.endgame').style.display=null;
     origBoard=Array.from(Array(9).keys())//just created an array with 0-8 numbers in a fancy way
     cell[i].addEventListener('click',Turnclick,false);
     
@@ -70,8 +71,12 @@ for(var i=0;i<cell.length;i++){
 
 
 function Turnclick(square){
+    if(typeof origBoard[square.target.id]=="number"){
+        turn(square.target.id,HumPlayer)
+       if(!checkTie()) turn(bestSpot(),AiPlayer);
+    }
+
     
-    turn(square.target.id,HumPlayer)
 }
 
 
@@ -112,12 +117,36 @@ return Gamewon
 
 
 function Gameover(Gamewon){
-    
-    const cells=define()
+    const cell=define();
     for(let index of winCombs[Gamewon.index]){
         document.getElementById(index).style.backgroundColor=
             Gamewon.player==HumPlayer?"blue":"red";}
-    for(var i=0;i<cells.length;i++){
-        cells[i].removeEventListener("click",Turnclick,false)
- }
+    for(var i=0;i<cell.length;i++){
+        cell[i].removeEventListener("click",Turnclick,false)
+    }
+    declareWinner(Gamewon.player==HumPlayer ? "You Win!" : "You Loose!")
+}
+
+function declareWinner(Who){
+     document.querySelector('.endgame').style.display="flex"
+     document.querySelector('.endgame .text').innerText=Who
+}
+function emptySquares(){
+    return origBoard.filter(s=>typeof s==="number") //return an array with only number items, all the squares with numbers are empty and we need to find them
+}
+
+function bestSpot(){
+return emptySquares()[0];
+}
+
+function checkTie(){
+    if (emptySquares().length==0){
+        for ( var i; i<cell.length;i++){
+            cell[i].style.backgroundColor="green"
+            cell[i].removeEventListener('click',Turnclick,false)
+        }
+        declareWinner("Tie Game!")
+        return true
+    }
+    return false
 }

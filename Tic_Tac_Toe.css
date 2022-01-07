@@ -78,3 +78,12 @@ body{
  .startover:hover{
   font-size: 2rem;
  }
+ .endgame{
+   display:none;
+   justify-content: center;
+   align-items: center;
+   font-weight: 200;
+   font-family: "Luckiest Guy", cursive;
+   background-color: red;
+
+ }
