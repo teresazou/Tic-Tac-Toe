@@ -50,11 +50,31 @@ body{
       margin: 0 auto;
       margin-top: 0;
       cursor: pointer;
-      display: inline-block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       float:left;
+      font-weight: 200;
+      font-size: xx-large;
     }
 .row {
       display: block;
       float:left;
       width:100%;
   }
+ .startover{
+   display:none;
+   justify-content: center;
+   margin-bottom: 15px;
+   color: cornflowerblue;
+   background-color:#f18a78; 
+   border:none;
+   cursor: pointer;
+   background-color: white;
+   font-size: 1rem;
+    font-weight: 800;
+    font-family: "Luckiest Guy", cursive;
+ } 
+ .startover:hover{
+  font-size: 2rem;
+ }
