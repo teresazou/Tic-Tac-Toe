@@ -73,27 +73,36 @@ for(var i=0;i<cell.length;i++){
 function Turnclick(square){
     if(typeof origBoard[square.target.id]=="number"){
         turn(square.target.id,HumPlayer)
-       if(!checkTie()) turn(bestSpot(),AiPlayer);
+     if(turn(square.target.id,HumPlayer)!=true){
+       if(!checkTie()) { turn(bestSpot(),AiPlayer)}
+
+       else{ declareWinner("Tie Game!")};
+       
     }
 
     
+}
 }
 
 
 
 
 function turn(sqareID,player){
-
 origBoard[sqareID]=player;
 document.getElementById(sqareID).innerText=player;
 let Gamewon=checkWin(origBoard,player)
-if(Gamewon)Gameover(Gamewon)
+
+if(Gamewon){
+    Gameover(Gamewon)
+    return true
+}
 }
 
 
 
 
 function checkWin(board, player){
+    
 let plays=board.reduce((prev,current,index)=>{
     if(current==player){
         prev.push(index)
@@ -124,6 +133,7 @@ function Gameover(Gamewon){
     for(var i=0;i<cell.length;i++){
         cell[i].removeEventListener("click",Turnclick,false)
     }
+    
     declareWinner(Gamewon.player==HumPlayer ? "You Win!" : "You Loose!")
 }
 
@@ -140,12 +150,14 @@ return emptySquares()[0];
 }
 
 function checkTie(){
+    const cell=define();
     if (emptySquares().length==0){
         for ( var i; i<cell.length;i++){
             cell[i].style.backgroundColor="green"
             cell[i].removeEventListener('click',Turnclick,false)
         }
-        declareWinner("Tie Game!")
+        
+        //declareWinner("Tie Game!")
         return true
     }
     return false
