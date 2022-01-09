@@ -69,7 +69,6 @@ for(var i=0;i<cell.length;i++){
 
 
 
-
 function Turnclick(square){
     if(typeof origBoard[square.target.id]=="number"){
         turn(square.target.id,HumPlayer)
@@ -83,8 +82,6 @@ function Turnclick(square){
     
 }
 }
-
-
 
 
 function turn(sqareID,player){
@@ -122,9 +119,6 @@ return Gamewon
 }
 
 
-
-
-
 function Gameover(Gamewon){
     const cell=define();
     for(let index of winCombs[Gamewon.index]){
@@ -141,17 +135,17 @@ function declareWinner(Who){
      document.querySelector('.endgame').style.display="flex"
      document.querySelector('.endgame .text').innerText=Who
 }
-function emptySquares(){
-    return origBoard.filter(s=>typeof s==="number") //return an array with only number items, all the squares with numbers are empty and we need to find them
+function emptySquares(board){
+    return board.filter(s=>typeof s==="number") //return an array with only number items, all the squares with numbers are empty and we need to find them
 }
 
 function bestSpot(){
-return emptySquares()[0];
+return minimax(origBoard,AiPlayer).index;
 }
 
 function checkTie(){
     const cell=define();
-    if (emptySquares().length==0){
+    if (emptySquares(origBoard).length==0){
         for ( var i; i<cell.length;i++){
             cell[i].style.backgroundColor="green"
             cell[i].removeEventListener('click',Turnclick,false)
@@ -161,4 +155,67 @@ function checkTie(){
         return true
     }
     return false
+}
+
+function minimax(newboard,player){
+    var availspot= emptySquares(newboard)
+    //check for termial states such as win, loose or tie
+    //accordingly return a value
+    if (checkWin(newboard,HumPlayer)){
+        return {score:-10}
+    }else if(checkWin(newboard,AiPlayer)){
+        return {score:10}
+    }else if(availspot.length==0){
+        return {score:0}
+    }
+var moves=[]
+
+    //loop through avalibale spots
+    for(var i=0;i<availspot.length;i++){
+    //create an object for each and store the index of that spot
+        var move={}
+        move.index=newboard[availspot[i]]
+    // set the empty spot to the current player
+    newboard[availspot[i]] = player;
+    
+/*collect the score resulted from calling minimax 
+      on the opponent of the current player*/
+      if (player == AiPlayer){
+        var result = minimax(newboard, HumPlayer);
+        move.score = result.score;
+      }
+      else{
+        var result = minimax(newboard, AiPlayer);
+        move.score = result.score;
+      }
+
+// reset the spot to empty
+newboard[availspot[i]] = move.index;
+// push the object to the array
+moves.push(move)
+    }//forloop ends here
+
+// if it is the computer's turn loop over the moves and choose the move with the highest score
+var bestMove;
+if(player === AiPlayer){
+    var bestScore = -10000;
+    for(var i = 0; i < moves.length; i++){
+      if(moves[i].score > bestScore){
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+}else{
+// else loop over the moves and choose the move with the lowest score
+var bestScore = 10000;
+for(var i = 0; i < moves.length; i++){
+  if(moves[i].score < bestScore){
+    bestScore = moves[i].score;
+    bestMove = i;
+  }
+}
+}
+// return the chosen move (object) from the moves array
+return moves[bestMove];
+
 }
